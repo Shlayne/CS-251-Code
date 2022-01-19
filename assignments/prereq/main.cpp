@@ -18,6 +18,7 @@ static constexpr int maxExclusive = 1 << 10;
  * Returns:
  *	If the user input an integer within the specified bounds.
  */
+
 bool tryConvert(std::string& string, int& number)
 {
 	try
