@@ -18,15 +18,15 @@
 
 /*
  * Description:
- *	Reads the cardinality of the input sets from the user.
+ *	Reads the max cardinality of the input sets from the user.
  * Returns:
  *	An integer in the range [2, 1024).
  */
-int getInputSetCardinality()
+int getInputSetMaxCardinality()
 {
 	auto retry = []()
 	{
-		std::cout << "Invalid number. ";
+		std::cout << "Invalid cardinality. ";
 		return true;
 	};
 	
@@ -35,7 +35,7 @@ int getInputSetCardinality()
 	
 	do
 	{
-		std::cout << "Please enter an integer in the range [2, 1024): ";
+		std::cout << "Please enter the max cardinality of the input sets, within the range [2, 1024): ";
 		std::getline(std::cin, line);
 		
 		try
@@ -64,24 +64,14 @@ std::set<std::string> getInputSet(int n, char name)
 {
 	std::set<std::string> set;
 	
-	auto retry = [&set]()
-	{
-		std::cout << "Incorrect cardinality " << set.size() << ". ";
-		set.clear();
-		return true;
-	};
+	std::cout << "Please enter the space-separated roster of set " << name << ": ";
+	std::string line;
+	std::getline(std::cin, line);
 	
-	do
-	{
-		std::cout << "Please enter the space-separated elements of a " << n << "-cardinality set " << name << ": ";
-		std::string line;
-		std::getline(std::cin, line);
-		
-		std::istringstream stream(line);
-		for (std::string element; stream >> element && !element.empty();)
-			set.insert(std::move(element));
-	}
-	while (n != set.size() && retry());
+	std::istringstream stream(line);
+	for (std::string element; n > 0 && stream >> element && !element.empty();)
+		if (set.insert(std::move(element)).second)
+			n--;
 	
 	return set;
 }
@@ -157,7 +147,7 @@ int main()
 	std::cout << "******************************\n";
 	std::cout << '\n';
 	
-	int n = getInputSetCardinality();
+	int n = getInputSetMaxCardinality();
 	std::set<std::string> A = getInputSet(n, 'A');
 	std::set<std::string> B = getInputSet(n, 'B');
 	
@@ -168,30 +158,20 @@ int main()
 	
 	{
 		std::set<std::string> set;
-#define BETWEEN(a, b) a.begin(), a.end(), b.begin(), b.end(), std::inserter(set, set.begin())
+#define PRINT(a, op, b) \
+		std::set_##op(a.begin(), a.end(), b.begin(), b.end(), std::inserter(set, set.begin())); \
+		std::cout << "The " #op " of " #a " and " #b ": cardinality=" << set.size() << ", " << set << '\n'; \
+		set.clear()
 		
-		std::set_intersection(BETWEEN(A, B));
-		std::cout << "Intersection of A and B: cardinality=" << set.size() << ", " << set << '\n';
-		set.clear();
-		
-		std::set_union(BETWEEN(A, B));
-		std::cout << "Union of A and B: cardinality=" << set.size() << ", " << set << '\n';
-		set.clear();
-		
-		std::set_difference(BETWEEN(A, B));
-		std::cout << "Relative complement of A and B: cardinality=" << set.size() << ", " << set << '\n';
-		set.clear();
-		
-		std::set_difference(BETWEEN(B, A));
-		std::cout << "Relative complement of B and A: cardinality=" << set.size() << ", " << set << '\n';
-		set.clear();
-		
-		std::set_symmetric_difference(BETWEEN(A, B));
-		std::cout << "Symmetric difference of A and B: cardinality=" << set.size() << ", " << set << '\n';
-#undef BETWEEN
+		PRINT(A, intersection, B);
+		PRINT(A, union, B);
+		PRINT(A, difference, B);
+		PRINT(B, difference, A);
+		PRINT(A, symmetric_difference, B);
+#undef PRINT
 	}
 	
-	std::set<std::pair<std::string, std::string>> AcrossProductB = crossProduct(A, B);
+	auto AcrossProductB = crossProduct(A, B);
 	std::cout << "Cross product of A and B: cardinality=" << AcrossProductB.size() << ", " << AcrossProductB << '\n';
 	
 	// 2^(1023^2) is way too large to fit in 64 bits, so use gmp's big int.
