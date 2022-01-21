@@ -1,25 +1,15 @@
-GCC = g++ -c -std=c++17
-LIB = -lgmpxx -lgmp
+GCC = g++ -c -g -std=c++17
 OBJ = main.o
 NAME = main.exe
 
-all: $(NAME)
-
-debug: GCC += -g
-debug: $(NAME)
-
 $(NAME): $(OBJ)
-	g++ -o $(NAME) $(LIB) $(OBJ)
+	g++ -lgmpxx -lgmp -o $(NAME) $(OBJ)
 
 main.o: main.cpp
 	$(GCC) main.cpp
 
 .phony: run
-run: all
-	./$(NAME)
-
-.phony: drun
-drun: debug
+run: $(NAME)
 	valgrind --tool=memcheck --leak-check=full ./$(NAME)
 
 .phony: clean
