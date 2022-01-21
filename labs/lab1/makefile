@@ -12,7 +12,7 @@ OUT_FILE := $(BIN_DIR)/$(NAME)
 all: $(OUT_FILE)
 
 $(OUT_FILE): $(INT_FILES)
-	g++ $(LIB_FLAGS) -o $@ $(INT_FILES)
+	g++ $(LIB_FLAGS) -o $@ $^
 
 $(INT_DIR)/%.o: $(SRC_DIR)/%.cpp | $(INT_DIRS)
 	g++ $(CPP_FLAGS) -c -o $@ $^
