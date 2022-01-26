@@ -104,7 +104,7 @@ std::set<std::pair<E, E>> crossProduct(const std::set<E>& A, const std::set<E>& 
  *	Prints the pair to ostr.
  * Inputs:
  *	ostr: The stream to output to.
- *	pair: The Pair whose elements will be outputted to ostr.
+ *	pair: The pair whose elements will be outputted to ostr.
  * Returns:
  *	ostr to chain this operator.
  */

@@ -153,32 +153,10 @@ std::vector<std::set<std::pair<T1, T2>>> getBijectiveFunctions(const std::vector
 
 /*
  * Description:
- *	Prints the vector to ostr.
- * Inputs:
- *	ostr: The stream to output to.
- *	vector: The vector whose elements will be outputted to ostr.
- * Returns:
- *	ostr to chain this operator.
- */
-template<typename T>
-std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
-{
-	if (!vector.empty())
-	{
-		auto it = vector.begin();
-		ostr << *it;
-		while (++it != vector.end())
-			ostr << ' ' << *it;
-	}
-	return ostr;
-}
-
-/*
- * Description:
  *	Prints the pair to ostr.
  * Inputs:
  *	ostr: The stream to output to.
- *	pair: The Pair whose elements will be outputted to ostr.
+ *	pair: The pair whose elements will be outputted to ostr.
  * Returns:
  *	ostr to chain this operator.
  */
@@ -209,6 +187,28 @@ std::ostream& operator<<(std::ostream& ostr, const std::set<E>& set)
 			ostr << ',' << *it;
 	}
 	return ostr << '}';
+}
+
+/*
+ * Description:
+ *	Prints the vector to ostr.
+ * Inputs:
+ *	ostr: The stream to output to.
+ *	vector: The vector whose elements will be outputted to ostr.
+ * Returns:
+ *	ostr to chain this operator.
+ */
+template<typename T>
+std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
+{
+	if (!vector.empty())
+	{
+		auto it = vector.begin();
+		ostr << *it;
+		while (++it != vector.end())
+			ostr << ' ' << *it;
+	}
+	return ostr;
 }
 
 // Entry Point
