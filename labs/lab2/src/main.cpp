@@ -50,6 +50,7 @@ template<typename T1, typename T2>
 std::vector<std::set<std::pair<T1, T2>>> getAllFunctions(const std::set<T1>& a, const std::set<T2>& b)
 {
 	std::vector<std::set<std::pair<T1, T2>>> functions;
+	
 	if (!(a.empty() || b.empty()))
 	{
 		std::vector<typename std::set<T2>::const_iterator> iterators(a.size(), b.begin());
@@ -77,6 +78,7 @@ std::vector<std::set<std::pair<T1, T2>>> getAllFunctions(const std::set<T1>& a, 
 		}
 		while (!finished);
 	}
+	
 	return functions;
 }
 
@@ -131,24 +133,6 @@ std::vector<std::set<std::pair<T1, T2>>> getSurjectiveFunctions(const std::vecto
 	return functions;
 }
 
-/*
- * Description:
- *	Finds all bijective functions from set a to set b.
- * Inputs:
- *	a: The input set.
- *	b: The output set.
- * Returns:
- *	A vector with all bijective functions, in set notation.
- */
-template<typename T1, typename T2>
-std::vector<std::set<std::pair<T1, T2>>> getBijectiveFunctions(const std::vector<std::set<std::pair<T1, T2>>>& injective, const std::vector<std::set<std::pair<T1, T2>>>& surjective)
-{
-	std::vector<std::set<std::pair<T1, T2>>> functions;
-	if (injective.size() == surjective.size())
-		std::set_intersection(injective.begin(), injective.end(), surjective.begin(), surjective.end(), std::inserter(functions, functions.begin()));
-	return functions;
-}
-
 // Output
 
 /*
@@ -198,8 +182,8 @@ std::ostream& operator<<(std::ostream& ostr, const std::set<E>& set)
  * Returns:
  *	ostr to chain this operator.
  */
-template<typename T>
-std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
+template<typename E>
+std::ostream& operator<<(std::ostream& ostr, const std::vector<E>& vector)
 {
 	if (!vector.empty())
 	{
@@ -238,8 +222,14 @@ int main()
 	auto surjectiveFunctions = getSurjectiveFunctions(allFunctions, B.size());
 	std::cout << "There is/are " << surjectiveFunctions.size() << " surjective function(s) from A to B: " << surjectiveFunctions << '\n';
 	
-	auto bijectiveFunctions = getBijectiveFunctions(injectiveFunctions, surjectiveFunctions);
-	std::cout << "There is/are " << bijectiveFunctions.size() << " bijective function(s) from A to B: " << bijectiveFunctions << '\n';
+	// Given all possible functions from A to B, if A and B have the same cardinality, then the set of all injective functions from A to B
+	// is the set of all surjective functions from A to B, which, by definition, is also the set of all bijective functions from A to B.
+	// If A and B do not have the same cardinality, then there cannot be any bijective functions, since there will either be no injective
+	// or surjective functions from A to B.
+	if (A.size() == B.size())
+		std::cout << "There is/are " << injectiveFunctions.size() << " bijective function(s) from A to B: " << injectiveFunctions << '\n';
+	else
+		std::cout << "There are no bijective functions from A to B.\n";
 	
 	return 0;
 }
